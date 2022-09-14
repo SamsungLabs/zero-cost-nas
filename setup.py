@@ -44,7 +44,9 @@ class build_maybe_inplace(build_py):
         _dist_file = version_file.parent.joinpath('_dist_info.py')
         assert not _dist_file.exists()
         _dist_file.write_text('\n'.join(map(lambda attr_name: attr_name+' = '+repr(getattr(package_version, attr_name)), package_version.__all__)) + '\n')
-        return super().run()
+        ret = super().run()
+        _dist_file.unlink()
+        return ret
 
 
 setup(name='foresight',
@@ -56,10 +58,9 @@ setup(name='foresight',
       download_url='https://github.com/mohsaied/zero-cost-nas',
       python_requires='>=3.6.0',
       setup_requires=[
-          'git-python'
+          'GitPython'
       ],
       install_requires=[
-          'git-python',
           'h5py>=2.10.0',
           'jupyter>=1.0.0',
           'matplotlib>=3.2.1',
